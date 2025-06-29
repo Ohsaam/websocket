@@ -3,22 +3,31 @@ package com.websocket.websocket.dto;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.websocket.websocket.service.ChatService;
+
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Document(collection = "chatrooms")
 public class ChatRoom {
-    private String roomId;
+    @Id
+    private String id;
     private String name;
-    private Set<WebSocketSession> sessions = new HashSet<>();
-
-    @Builder
-    public ChatRoom(String roomId, String name){
-        this.roomId = roomId;
-        this.name = name;
-    }
+    @Builder.Default
+    private Set<String> userIds = new HashSet<>(); // 참여한 유저 ID들
+    private transient Set<WebSocketSession> sessions = new HashSet<>(); // 참여한 유저 세션들
 
     public void handleActions(WebSocketSession session, ChatMessage chatMessage, ChatService chatService){
         if(chatMessage.getType() == ChatMessage.MessageType.ENTER){

@@ -1,5 +1,6 @@
 package com.websocket.websocket.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,7 +12,10 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.websocket.websocket.dto.ChatMessage;
 import com.websocket.websocket.dto.ChatRoom;
+import com.websocket.websocket.repository.ChatMessageRepository;
+import com.websocket.websocket.repository.ChatRoomRepository;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -19,38 +23,36 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@Service
 public class ChatService {
-    private final ObjectMapper objectMapper;
-    private Map<String, ChatRoom> chatRooms;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
-    @PostConstruct
-    private void init() {
-        chatRooms = new LinkedHashMap<>();
-    }
-
-    public List<ChatRoom> findAllRoom() {
-        return new ArrayList<>(chatRooms.values());
-    }
-
-    public ChatRoom findRoomById(String roomId) {
-        return chatRooms.get(roomId);
-    }
-    public ChatRoom createRoom(String name) {
-        String randomId = UUID.randomUUID().toString();
+    // 채팅방 생성
+    public ChatRoom createRoom(String name){
         ChatRoom chatRoom = ChatRoom.builder()
-            .roomId(randomId)
+            .id(UUID.randomUUID().toString())
             .name(name)
             .build();
-        chatRooms.put(randomId, chatRoom);
+        chatRoomRepository.save(chatRoom);
         return chatRoom;
     }
-    public <T> void sendMessage(WebSocketSession session, T message) {
-        try {
-            String payload = objectMapper.writeValueAsString(message);
-            session.sendMessage(new TextMessage(payload));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+    // 모든 채팅방 조회
+    public List<ChatRoom> findAllRoom(){
+        return chatRoomRepository.findAll();
     }
+
+    // 특정 채팅방 조회
+    public ChatRoom findRoomById(String id){
+        return chatRoomRepository.findById(id).orElse(null);
+    }
+
+    public ChatMessage saveMessage(ChatMessage message){
+        message.setTimestamp(LocalDateTime.now());
+        return chatMessageRepository.save(message);
+    }
+
+    public List<ChatMessage> findMessagesByRoomId(String roomId){
+        return chatMessageRepository.findByRoomIdOrderByTimestampAsc(roomId);
+    }
+
 }

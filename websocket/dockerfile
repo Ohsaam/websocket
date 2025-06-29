@@ -1,0 +1,6 @@
+FROM openjdk:17-jdk
+
+# Docker 파일 카피를 통해서 빌드한 파일을 컨테이너로 복사해주고, 빌드한 JAR 파일을 실행 시킨다.
+COPY build/libs/*SNAPSHOT.jar /app.jar
+
+ENTRYPOINT [ "java", "-jar", "/app.jar"]
