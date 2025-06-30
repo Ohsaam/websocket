@@ -27,6 +27,7 @@ public class ChatRoom {
     private String name;
     @Builder.Default
     private Set<String> userIds = new HashSet<>(); // 참여한 유저 ID들
+    @Builder.Default
     private transient Set<WebSocketSession> sessions = new HashSet<>(); // 참여한 유저 세션들
 
     public void handleActions(WebSocketSession session, ChatMessage chatMessage, ChatService chatService){
@@ -34,11 +35,6 @@ public class ChatRoom {
             sessions.add(session);
             chatMessage.setMessage(chatMessage.getSender() + "님이 입장하셨습니다.");
         }
-        sendMessage(chatMessage, chatService);
-    }
-
-    public <T> void sendMessage(T message, ChatService chatService){
-        sessions.parallelStream().forEach(session -> chatService.sendMessage(session, message));
     }
 
 }

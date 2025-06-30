@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket 실시간 채팅</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 500px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 24px; }
+        .chat-log { height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; padding: 8px; margin-bottom: 16px; background: #fafafa; }
+        .chat-message { margin: 4px 0; }
+        .chat-message .sender { font-weight: bold; margin-right: 4px; }
+        .input-row { display: flex; gap: 8px; }
+        .input-row input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .input-row button { padding: 8px 16px; border: none; background: #1976d2; color: #fff; border-radius: 4px; cursor: pointer; }
+        .input-row button:disabled { background: #aaa; }
+        .room-form, .nickname-form { margin-bottom: 16px; }
+    </style>
+    <script src="chatHelper.js"></script>
+</head>
+<body>
+<div class="container" id="app"></div>
+</body>
+</html>
