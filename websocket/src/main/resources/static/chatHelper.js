@@ -63,5 +63,9 @@ function renderChatSection() {
 }
 
 function appendMessage(msgObj) {
-    
+    const div = document.createElement('div');
+    div.className = 'chat-message';
+    div.innerHTML = `<span class="sender">${msgObj.sender || ''}</span>${msgObj.message}`;
+    chatLog.appendChild(div);
+    chatLog.scrollTop = chatLog.scrollHeight;
 }
